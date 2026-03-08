@@ -1,0 +1,10 @@
+name: CounterStrike
+version: '${version}'
+main: src.counterstrike.Main
+api-version: '1.20'
+softdepend: [ WorldLoader, Multiverse-Core, MultiWorld, CorpseReborn, PlaceholderAPI, SlimeWorldManager ]
+authors: [ Coquettishpigs ]
+commands:
+  cs:
+    description: This is main plugin command.
+    aliases: [counterstrike]

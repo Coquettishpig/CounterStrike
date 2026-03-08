@@ -1,0 +1,207 @@
+ShopGuns:
+  MP7:
+    Slot: 0
+    Price: 1500
+    Item-Name: '&cMP7'
+    Item-Lore: '&7价格: &6$1500'
+  P90:
+    Slot: 1
+    Price: 2350
+    Item-Name: '&cP90'
+    Item-Lore: '&7价格: &6$2350'
+  XM1014:
+    Slot: 2
+    Price: 2000
+    Item-Name: '&cXM1014'
+    Item-Lore: '&7价格: &6$2000'
+  Nova:
+    Slot: 3
+    Price: 1100
+    Item-Name: '&c新星'
+    Item-Lore: '&7价格: &6$1100'
+  FAMAS:
+    Slot: 4
+    Price: 2050
+    SlotPlace: 0
+    Role: COUNTERTERRORIST
+    Item-Name: '&c法玛斯-电子脉冲'
+    Item-Lore: '&c免费武器 &a&l◆ 限时&6&l &r#&7价格:: &6$2050'
+  GALILAR:
+    Slot: 4
+    Price: 1800
+    SlotPlace: 0
+    Role: TERRORIST
+    Item-Name: '&c加利尔 AR-火箭冰棒'
+    Item-Lore: '&c免费武器 &a&l◆ 限时&6&l &r#&7价格:: &6$1800'
+  Ak-47:
+    Slot: 5
+    Price: 2700
+    SlotPlace: 0
+    Role: TERRORIST
+    Item-Material: GOLD_SPADE
+    Item-Name: '&cAK-47-火神'
+    Item-Lore: '&c免费武器 &a&l◆ 限时&6&l &r#&7价格:: &6$2700'
+  M4A1:
+    Slot: 5
+    Price: 2900
+    SlotPlace: 0
+    Role: COUNTERTERRORIST
+    Item-Material: WOODEN_HOE
+    Item-Name: '&cM4A1'
+    Item-Lore: '&7价格: &6$2900'
+  M4A4:
+    Slot: 14
+    Price: 3100
+    SlotPlace: 0
+    Role: COUNTERTERRORIST
+    Item-Material: IRON_HOE
+    Item-Name: '&cM4A4'
+    Item-Lore: '&7价格: &6$3100'
+  SCOUT:
+    Slot: 6
+    Price: 1700
+    Item-Material: GOLD_AXE
+    Item-Name: '&cScout-裂痕'
+    Item-Lore: '&c免费武器 &a&l◆ 限时&6&l &r#&7价格:: &6$1700'
+  AWP:
+    Slot: 7
+    Price: 4750
+    Item-Name: '&cAWP'
+    Item-Lore: '&7价格: &6$4750'
+  NEGEV:
+    Slot: 8
+    Price: 1700
+    SlotPlace: 0
+    Item-Material: NETHERITE_SHOVEL
+    Item-Name: '&c内格夫'
+    Item-Lore: '&7价格: &6$1700'
+
+  P902:
+    Slot: 10
+    Price: 2350
+    Item-Material: DIAMOND_PICKAEX
+    Item-Name: '&cP90-二西莫夫'
+    Permission: true
+    Item-Lore: '&c专属武器 &a&l◆ VIP&6&l &r#&7价格:: &6$2350'
+  Ak-472:
+    Slot: 14
+    Price: 2700
+    SlotPlace: 0
+    Role: TERRORIST
+    Item-Material: STONE_HOE
+    Item-Name: '&cAK-47-红线'
+    Item-Lore: '&7价格: &6$2700'
+    Permission: true
+    Item-Lore: '&c专属武器 &a&l◆ VIP&6&l &r#&7价格:: &6$2700'
+  M4A42:
+    Slot: 23
+    Price: 3100
+    SlotPlace: 0
+    Role: COUNTERTERRORIST
+    Item-Material: DIAMOND_HOE
+    Item-Name: '&cM4A4-二西莫夫'
+    Permission: true
+    Item-Lore: '&c专属武器 &a&l◆ VIP&6&l &r#&7价格:: &6$3100'
+  AWP2:
+    Slot: 16
+    Price: 4750
+    Item-Name: '&cAWP-二西莫夫'
+    Permission: true
+    Item-Lore: '&c专属武器 &a&l◆ VIP&6&l &r#&7价格:: &6$4750'
+
+  Revolver:
+    Slot: 35
+    Price: 600
+    Item-Material: STONE_PICKAEX
+    Item-Name: '&aR8左轮手枪'
+    Item-Lore: '&7价格: &6$600'
+  Deagle:
+    Slot: 34
+    Price: 700
+    Item-Material: GOLD_PICKAEX
+    Item-Name: '&a沙漠之鹰'
+    Item-Lore: '&7价格: &6$700'
+
+ShopGrenades:
+  Firebomb:
+    Slot: 28
+    Price: 400
+    Item-Name: '&a燃烧弹'
+    Item-Lore: '&7价格: &6$400'
+  Frag:
+    Slot: 27
+    Price: 300
+    Item-Name: '&a手雷'
+    Item-Lore: '&7价格: &6$300'
+  Smoke:
+    Slot: 36
+    Price: 300
+    Item-Name: '&a烟雾弹'
+    Item-Lore: '&7价格: &6$300'
+  FlashBang:
+    Slot: 37
+    Price: 200
+    Item-Name: '&a闪光弹'
+    Item-Lore: '&7价格: &6$200'
+  Decoy:
+    Slot: 45
+    Price: 50
+    Item-Name: '&a诱饵弹'
+    Item-Lore: '&7价格: &6$50'
+ShopRole:
+  KitDefusing9000:
+    Slot: 53
+    Price: 200
+    SlotPlace: 5
+    Team: COUNTERTERRORIST
+    Item-Material: SHEARS
+    Item-Name: "&a钳子"
+    Item-Lore: '&7价格: &6$200'
+  SPYGLASS:
+    Slot: 52
+    Price: 400
+    SlotPlace: 6
+    Team: COUNTERTERRORIST
+    Item-Material: SPYGLASS
+    Item-Name: "&a望远镜"
+    Item-Lore: '&7价格: &6$400'
+  SPYGLASS2:
+    Slot: 52
+    Price: 400
+    SlotPlace: 6
+    Team: TERRORIST
+    Item-Material: SPYGLASS
+    Item-Name: "&a望远镜"
+    Item-Lore: '&7价格: &6$400'
+  SpecialVest:
+    Slot: 43
+    Price: 650
+    SlotPlace: 38
+    Team: COUNTERTERRORIST
+    Item-Material: IRON_CHESTPLATE
+    Item-Name: "&c防弹背心"
+    Item-Lore: '&7价格: &6$650'
+  Skullaclava:
+    Slot: 44
+    Price: 350
+    SlotPlace: 39
+    Team: COUNTERTERRORIST
+    Item-Material: IRON_HELMET
+    Item-Name: "&c防弹头盔"
+    Item-Lore: '&7价格: &6$350'
+  ChainJacket:
+    Slot: 43
+    Price: 650
+    SlotPlace: 38
+    Team: TERRORIST
+    Item-Material: CHAINMAIL_CHESTPLATE
+    Item-Name: "&c防弹背心"
+    Item-Lore: '&7价格: &6$650'
+  BandanaWithMask:
+    Slot: 44
+    Price: 350
+    SlotPlace: 39
+    Team: TERRORIST
+    Item-Material: CHAINMAIL_HELMET
+    Item-Name: "&c防弹头盔"
+    Item-Lore: '&7价格: &6$350'

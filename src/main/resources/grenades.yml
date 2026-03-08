@@ -1,0 +1,61 @@
+Grenades:
+  Frag:
+    Item-Information:
+      Symbol: "\u9283"
+      Item-Name: '&a手雷'
+      Item-Type: MAGMA_CREAM
+      Item-Data: 0
+      Grenade-Type: FRAG
+    Properties:
+      Delay: 2
+      Duration: 0
+      ThrowSpeed: 1.2
+      EffectPower: 20
+  FlashBang:
+    Item-Information:
+      Symbol: "\u9277"
+      Item-Name: '&a闪光弹'
+      Item-Type: DIAMOND
+      Item-Data: 0
+      Grenade-Type: FLASHBANG
+    Properties:
+      Delay: 2
+      Duration: 5.0
+      ThrowSpeed: 1.4
+      EffectPower: 20
+  Decoy:
+    Item-Information:
+      Symbol: "\u9278"
+      Item-Name: '&a诱饵弹'
+      Item-Type: IRON_INGOT
+      Item-Data: 0
+      Grenade-Type: DECOY
+    Properties:
+      Delay: 2
+      Duration: 8
+      ThrowSpeed: 1.2
+      EffectPower: 20
+  Smoke:
+    Item-Information:
+      Symbol: "\u9278"
+      Item-Name: '&a烟雾弹'
+      Item-Type: GOLD_INGOT
+      Item-Data: 0
+      Grenade-Type: SMOKE
+    Properties:
+      Delay: 2
+      Duration: 10
+      ThrowSpeed: 1.2
+      EffectPower: 4.0
+  Firebomb:
+    Item-Information:
+      Symbol: "\u9279"
+      Item-Name: '&a燃烧弹'
+      Item-Type: EMERALD
+      Item-Data: 0
+      Grenade-Type: FIREBOMB
+    Properties:
+      Delay: 2
+      Duration: 10
+      ThrowSpeed: 1.2
+      EffectPower: 4.0

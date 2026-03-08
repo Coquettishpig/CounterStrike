@@ -1,0 +1,528 @@
+Guns:
+  #步枪
+  AWP:
+    Item-Information:
+      Symbol: "\u4753\u4754"
+      Item-Name: '&aAWP'
+      Item-Type: GOLDEN_HOE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.awpshot
+      Damage: 24
+      Delay: 24
+      Bullets: 1
+      Accuracy: 1.5
+      Distance: 100
+      Snipe: true
+    Reload:
+      Module: 1
+      Amount: 5
+      Sound_Start: cs_random.random.awp_reload_start
+      Sound_End: cs_random.random.awp_reload_end
+      Duration: 65
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  AWP2:
+    Item-Information:
+      Symbol: "\u4753\u4754"
+      Item-Name: '&aAWP-二西莫夫'
+      Item-Type: DIAMOND_AXE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.awpshot
+      Damage: 24
+      Delay: 24
+      Bullets: 1
+      Accuracy: 1.5
+      Distance: 100
+      Snipe: true
+    Reload:
+      Module: 1
+      Amount: 5
+      Sound_Start: cs_random.random.awp_reload_start
+      Sound_End: cs_random.random.awp_reload_end
+      Duration: 65
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  SCOUT:
+    Item-Information:
+      Symbol: "\u4763\u4764\u4765"
+      Item-Name: '&aSCOUT-裂痕'
+      Item-Type: GOLDEN_AXE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.scoutshot
+      Damage: 17.5
+      Delay: 22
+      Bullets: 1
+      Accuracy: 0.8
+      Distance: 65
+      Snipe: true
+    Reload:
+      Module: 1
+      Amount: 10
+      Sound_Start: cs_random.random.scout_reload_start
+      Sound_End: cs_random.random.scout_reload_end
+      Duration: 70
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  Ak-47:
+    Item-Information:
+      Symbol: "\u4717\u4718\u4719"
+      Item-Name: '&aAK-47-Vulcan'
+      Item-Type: GOLDEN_SHOVEL
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.ak47shot
+      Damage: 7.0
+      Delay: 0
+      Bullets: 1
+      Accuracy: 2.2
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 30
+      Sound_Start: cs_random.random.ak47_reload_start
+      Sound_End: cs_random.random.ak47_reload_end
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.3
+      MaxRoundsPerPitch: 10
+  Ak-472:
+    Item-Information:
+      Symbol: "\u4717\u4718\u4719"
+      Item-Name: '&aAK-47-RedLine'
+      Item-Type: STONE_HOE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.ak47shot
+      Damage: 7.0
+      Delay: 0
+      Bullets: 1
+      Accuracy: 2.2
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 30
+      Sound_Start: cs_random.random.ak47_reload_start
+      Sound_End: cs_random.random.ak47_reload_end
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.3
+      MaxRoundsPerPitch: 10
+  M4A1:
+    Item-Information:
+      Symbol: "\u4728\u4729\u472a"
+      Item-Name: '&aM4A1'
+      Item-Type: WOODEN_HOE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.m4a1shot
+      Damage: 7.5
+      Delay: 0
+      Bullets: 1
+      Accuracy: 1.8
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 20
+      Sound_Start: cs_random.random.m4a1_reload_start
+      Sound_End: cs_random.random.m4a1_reload_start
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1
+      MaxRoundsPerPitch: 7
+  M4A4:
+    Item-Information:
+      Symbol: "\u4726\u4727"
+      Item-Name: '&aM4A4'
+      Item-Type: IRON_HOE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.m4a4shot
+      Damage: 6.8
+      Delay: 0
+      Bullets: 1
+      Accuracy: 1.7
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 30
+      Sound_Start: cs_random.random.m4a4_reload_start
+      Sound_End: cs_random.random.m4a4_reload_end
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.5
+      MaxRoundsPerPitch: 8
+  M4A42:
+    Item-Information:
+      Symbol: "\u4726\u4727"
+      Item-Name: '&aM4A4-二西莫夫'
+      Item-Type: DIAMOND_HOE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.m4a4shot
+      Damage: 6.8
+      Delay: 0
+      Bullets: 1
+      Accuracy: 1.7
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 30
+      Sound_Start: cs_random.random.m4a4_reload_start
+      Sound_End: cs_random.random.m4a4_reload_end
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.5
+      MaxRoundsPerPitch: 8
+  FAMAS:
+    Item-Information:
+      Symbol: "\u4710\u4711\u4712"
+      Item-Name: '&aFAMAS'
+      Item-Type: NETHERITE_PICKAXE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.famasshot
+      Damage: 6
+      Delay: 0
+      Bullets: 1
+      Accuracy: 2.0
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 25
+      Sound_Start: cs_random.random.famas_reload_start
+      Sound_End: cs_random.random.famas_reload_end
+      Duration: 61.5
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.7
+      MaxRoundsPerPitch: 10
+  GALILAR:
+    Item-Information:
+      Symbol: "\u472b\u472c\u472d"
+      Item-Name: '&a加利尔 AR'
+      Item-Type: NETHERITE_AXE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.galilarshot
+      Damage: 6
+      Delay: 0
+      Bullets: 1
+      Accuracy: 2.2
+      Distance: 55
+      Reload: ''
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 30
+      Sound_Start: cs_random.random.galilar_reload_start
+      Sound_End: cs_random.random.galilar_reload_end
+      Duration: 46
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.5
+      MaxRoundsPerPitch: 12
+  #冲锋枪
+  P90:
+    Item-Information:
+      Symbol: "\u47c5\u47c6"
+      Item-Name: '&aP90'
+      Item-Type: WOODEN_SHOVEL
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.p90shot
+      Damage: 2.5
+      Delay: 0
+      Bullets: 1
+      Accuracy: 2.7
+      Distance: 50
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 50
+      Sound_Start: cs_random.random.p90_reload_start
+      Sound_End: cs_random.random.p90_reload_end
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.4
+      MaxRoundsPerPitch: 20
+  P902:
+    Item-Information:
+      Symbol: "\u47c5\u47c6"
+      Item-Name: '&aP90-二西莫夫'
+      Item-Type: DIAMOND_PICKAXE
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.p90shot
+      Damage: 2.5
+      Delay: 0
+      Bullets: 1
+      Accuracy: 2.7
+      Distance: 50
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 50
+      Sound_Start: cs_random.random.p90_reload_start
+      Sound_End: cs_random.random.p90_reload_end
+      Duration: 60
+    Burst:
+      Rounds: 3
+      DelayRounds: 2
+      RoundsPerYaw: 1.4
+      MaxRoundsPerPitch: 20
+  MP7:
+    Item-Information:
+      Symbol: "\u47c3\u47c4"
+      Item-Name: '&aMP7'
+      Item-Type: STONE_SHOVEL
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.mp7shot
+      #伤害值单位为一滴血
+      Damage: 3.0
+      Delay: 0
+      #射出的子弹数
+      Bullets: 1
+      #越大子弹越散
+      Accuracy: 2.9
+      #距离
+      Distance: 45
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 30
+      Sound_Start: cs_random.random.mp7_reload_start
+      Sound_End: cs_random.random.mp7_reload_end
+      Duration: 61
+    Burst:
+      #越小子弹射击频率越慢
+      Rounds: 3
+      DelayRounds: 2
+      #越大子弹左右平移越大
+      RoundsPerYaw: 1.6
+      #越小子弹抬高越小
+      MaxRoundsPerPitch: 20
+  #重型武器
+  XM1014:
+    Item-Information:
+      Symbol: "\u4893\u4894\u4895"
+      Item-Name: '&aXM1014'
+      Item-Type: DIAMOND_SHOVEL
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.shotgunshot
+      Damage: 1.5
+      Delay: 7
+      Bullets: 9
+      Accuracy: 5.7
+      Distance: 20
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 7
+      Sound_Start: cs_random.random.reload_start
+      Sound_End: cs_random.random.reload_end
+      Duration: 60
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  Nova:
+    Item-Information:
+      Symbol: "\u488d\u488e\u488f"
+      Item-Name: '&a新星'
+      Item-Type: IRON_SHOVEL
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.shotgunshot
+      Damage: 2.0
+      Delay: 25
+      Bullets: 8
+      Accuracy: 4.5
+      Distance: 20
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 8
+      Sound_Start: cs_random.random.reload_start
+      Sound_End: cs_random.random.reload_end
+      Duration: 60
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  NEGEV:
+    Item-Information:
+      Symbol: "\u4783\u4784\u4785"
+      Item-Name: '&a内格夫'
+      Item-Type: NETHERITE_SHOVEL
+      Item-Data: 0
+      Gun-Type: PRIMARY
+    Shoot:
+      Sound: cs.weapons.negevshot
+      #伤害值单位为一滴血
+      Damage: 0.8
+      Delay: 0
+      #射出的子弹数
+      Bullets: 1
+      #越大子弹越散
+      Accuracy: 1.7
+      #距离
+      Distance: 45
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 124
+      Sound_Start: cs_random.random.negev_reload_start
+      Sound_End: cs_random.random.negev_reload_end
+      Duration: 104
+    Burst:
+      #越小子弹射击频率越慢
+      Rounds: 5
+      DelayRounds: 1
+      #越大子弹左右平移越大
+      RoundsPerYaw: 1
+      #越小子弹抬高越小
+      MaxRoundsPerPitch: 10
+  #手枪
+  USPS:
+    Item-Information:
+      Symbol: "\u47e2\u47e3"
+      Item-Name: '&aUSPS-消音版'
+      Item-Type: WOODEN_PICKAXE
+      Item-Data: 0
+      Gun-Type: SECONDARY
+    Shoot:
+      Sound: cs.weapons.uspsshot
+      Damage: 7.0
+      Delay: 5
+      Bullets: 1
+      Accuracy: 0.3
+      Distance: 35
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 13
+      Sound_Start: cs_random.random.usps_reload_start
+      Sound_End: cs_random.random.usps_reload_end
+      Duration: 42
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  Glock:
+    Item-Information:
+      Symbol: "\u47e0"
+      Item-Name: '&d格洛克-渐变之色'
+      Item-Type: IRON_PICKAXE
+      Item-Data: 0
+      Gun-Type: SECONDARY
+    Shoot:
+      Sound: cs.weapons.glockshot
+      Damage: 6.5
+      Delay: 4
+      Bullets: 1
+      Accuracy: 0.4
+      Distance: 35
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 20
+      Sound_Start: cs_random.random.glock_reload_start
+      Sound_End: cs_random.random.glock_reload_end
+      Duration: 41
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  Deagle:
+    Item-Information:
+      Symbol: "\u47e5"
+      Item-Name: '&a沙漠之鹰'
+      Item-Type: GOLDEN_PICKAXE
+      Item-Data: 0
+      Gun-Type: SECONDARY
+    Shoot:
+      Sound: cs.weapons.deagle
+      Damage: 10.0
+      Delay: 4
+      Bullets: 1
+      Accuracy: 0.6
+      Distance: 40
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 7
+      Sound_Start: cs_random.random.reload_start
+      Sound_End: cs_random.random.reload_end
+      Duration: 35
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
+  Revolver:
+    Item-Information:
+      Symbol: "\u47e4"
+      Item-Name: '&aR8-左轮手枪'
+      Item-Type: STONE_PICKAXE
+      Item-Data: 0
+      Gun-Type: SECONDARY
+    Shoot:
+      Sound: cs.weapons.deagle
+      Damage: 8.0
+      Delay: 15
+      Bullets: 1
+      Accuracy: 0.2
+      Distance: 40
+      Snipe: false
+    Reload:
+      Module: 1
+      Amount: 8
+      Sound_Start: cs_random.random.reload_start
+      Sound_End: cs_random.random.reload_end
+      Duration: 35
+    Burst:
+      Rounds: 1
+      DelayRounds: 1
