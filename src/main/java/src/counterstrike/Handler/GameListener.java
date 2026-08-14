@@ -48,6 +48,9 @@ import java.io.DataOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
+import net.momirealms.craftengine.core.util.Key;
+
 public class GameListener implements Listener {
     private Main main;
     private Inventory selector;
@@ -87,12 +90,18 @@ public class GameListener implements Listener {
     public void onInteract(final PlayerInteractEvent e) {
         final Player p = e.getPlayer();
         final Game g = this.main.getManager().getGame(p);
+
         if (g != null) {
+            // 1. 拦截副手交互，确保所有逻辑基于主手
             if (e.getHand() != EquipmentSlot.HAND) {
                 e.setCancelled(true);
                 return;
             }
+
+            // 2. 右键交互逻辑（包含等待室、商店、拆弹、枪械、以及新增的容器拦截）
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+                // --- 等待阶段 ---
                 if (g.getState() == GameState.WAITING) {
                     if (p.getInventory().getItemInHand() != null) {
                         if (p.getInventory().getItemInHand().getType() == Material.LEATHER) {
@@ -103,8 +112,26 @@ public class GameListener implements Listener {
                             p.sendMessage(Messages.PREFIX + Messages.GAME_LEFT.toString());
                         }
                     }
-                } else if (g.getState() == GameState.IN_GAME || g.getState() == GameState.ROUND) {
+                }
+
+                // --- 游戏/回合进行中 ---
+                else if (g.getState() == GameState.IN_GAME || g.getState() == GameState.ROUND) {
+
+                    // 【新增逻辑】：拦截所有容器、门、活板门、铁砧等方块的右键交互
+                    if (e.getClickedBlock() != null) {
+                        String typeName = e.getClickedBlock().getType().name();
+                        if (typeName.contains("CHEST") || typeName.contains("BARREL") || typeName.contains("FURNACE") ||
+                                typeName.contains("DROPPER") || typeName.contains("HOPPER") || typeName.contains("_DOOR") ||
+                                typeName.contains("TRAPDOOR") || typeName.contains("FENCE_GATE") || typeName.contains("ANVIL") ||
+                                typeName.contains("SIGN")) {
+
+                            e.setCancelled(true);
+                        }
+                    }
+
                     final ItemStack i = p.getInventory().getItemInHand();
+
+                    // 商店逻辑
                     if (i != null && i.getType() != Material.AIR && i.getType() == Material.EMERALD) {
                         if (this.main.getManager().isAtSpawn(g, p)) {
                             if (g.getTimer() > 90 || g.getState() == GameState.ROUND) {
@@ -117,25 +144,29 @@ public class GameListener implements Listener {
                         }
                         return;
                     }
+
+                    // 拆弹与枪械逻辑
                     if (i != null && i.getType() != Material.AIR && g.getState() == GameState.IN_GAME) {
-                        if ((i.getType() == Material.SHEARS || i.getType() == Material.TRIPWIRE_HOOK) && e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.NOTE_BLOCK) {
-                            e.setCancelled(true);
-                            if (this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST).getPlayers().contains(p) && !g.isDefusing(p) && p.getLocation().distance(g.getBomb().getLocation()) <= 2.0) {
-                                g.addDefuser(p, (i.getType() == Material.SHEARS) ? 5 : 10);
-                                p.playSound(p.getLocation(), SpigotSound.LEVEL_UP.getSound(), 1.0f, 1.0f);
+
+                        // 拆弹检测 (点击白昼传感器或小麦)
+                        if ((i.getType() == Material.SHEARS || i.getType() == Material.GOLD_NUGGET) && e.getClickedBlock() != null) {
+                            Material blockType = e.getClickedBlock().getType();
+                            if (blockType == Material.DAYLIGHT_DETECTOR || blockType == Material.WHEAT) {
+                                e.setCancelled(true);
+                                if (this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST).getPlayers().contains(p) && !g.isDefusing(p) && p.getLocation().distance(g.getBomb().getLocation()) <= 2.0) {
+                                    g.addDefuser(p, (i.getType() == Material.SHEARS) ? 5 : 10);
+                                    p.playSound(p.getLocation(), SpigotSound.LEVEL_UP.getSound(), 1.0f, 1.0f);
+                                }
                             }
                         }
-                        if ((i.getType() == Material.SHEARS || i.getType() == Material.TRIPWIRE_HOOK) && e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.WHEAT) {
-                            e.setCancelled(true);
-                            if (this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST).getPlayers().contains(p) && !g.isDefusing(p) && p.getLocation().distance(g.getBomb().getLocation()) <= 2.0) {
-                                g.addDefuser(p, (i.getType() == Material.SHEARS) ? 5 : 10);
-                                p.playSound(p.getLocation(), SpigotSound.LEVEL_UP.getSound(), 1.0f, 1.0f);
-                            }
-                        }
+
+                        // 枪械射击逻辑
                         final Gun gun = this.main.getGun(i);
                         if (gun != null && !g.isDefusing(p)) {
                             gun.shot(g, p);
                         }
+
+                        // 手雷投掷逻辑
                         final Grenade grenade = this.main.getGrenade(i);
                         if (grenade != null && g.getState() == GameState.IN_GAME && !g.isRoundEnding() && !g.isDefusing(p)) {
                             e.setCancelled(true);
@@ -143,7 +174,9 @@ public class GameListener implements Listener {
                         }
                     }
                 }
-            } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            }
+            // 3. 左键交互逻辑（装弹）
+            else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
                 e.setCancelled(true);
                 final ItemStack i = p.getInventory().getItemInHand();
                 if (i != null && i.getType() != Material.AIR) {
@@ -153,17 +186,23 @@ public class GameListener implements Listener {
                     }
                 }
             }
-        } else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getState() instanceof Sign) {
+        }
+        // 4. 处理不在游戏内的玩家：点击木牌加入游戏
+        else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getState() instanceof Sign) {
             final Location s = e.getClickedBlock().getLocation();
+
+            // 检测是否为特定游戏的加入木牌
             for (final Game game : this.main.getManager().getGames()) {
                 for (final Location sign : game.getSigns()) {
-                    if (s.getWorld() == sign.getWorld() && s.distance(sign) == 0.0) {
+                    if (s.getWorld().equals(sign.getWorld()) && s.distance(sign) == 0.0) {
                         e.setCancelled(true);
                         this.main.getManager().addPlayer(p, game);
                         return;
                     }
                 }
             }
+
+            // 检测是否为快速加入木牌
             for (final Location sign2 : this.main.getManager().getQuickJoinSigns()) {
                 if (s.equals(sign2)) {
                     final Game ga = this.main.getManager().findGame(p);
@@ -225,13 +264,15 @@ public class GameListener implements Listener {
                 final Block b = p.getLocation().getBlock();
                 if (b.getType() == Material.AIR) {
                     p.getInventory().setItem(5, new ItemStack(Material.AIR));
-                    b.setType(Material.NOTE_BLOCK); // 将 DAYLIGHT_DETECTOR 替换为 NOTEBLOCK
-                    BlockData data = b.getBlockData();
-                    // 获取音符盒的 BlockState 并设置 instrument 和 note
-                    if (data instanceof org.bukkit.block.data.type.NoteBlock noteBlock) {
-                        noteBlock.setInstrument(Instrument.BASS_DRUM); // 设置 instrument 为 BASEDRUM
-                        noteBlock.setNote(new Note(2)); // 设置 note 值为 2
-                        b.setBlockData(noteBlock);
+                    // 定义 CE 炸弹方块的 Key
+                    Key bombKey = new Key("csgo", "bomb");
+
+                    // 使用 CraftEngine 放置自定义方块
+                    boolean success = CraftEngineBlocks.place(b.getLocation(), bombKey, false);
+
+                    // 如果放置失败（例如该位置被占用或 ID 错误），可以做个容错，但通常 AIR 判断过就不会失败
+                    if (!success) {
+                        this.main.getLogger().warning("无法放置 CraftEngine 炸弹方块: csgo:bomb");
                     }
 
                     g.getBomb().setLocation(b.getLocation());
@@ -258,38 +299,68 @@ public class GameListener implements Listener {
     @EventHandler
     public void onChat(final AsyncPlayerChatEvent e) {
         final Player p = e.getPlayer();
-        final Game g = this.main.getManager().getGame(p);
+        final GameManager manager = this.main.getManager();
+        final Game g = manager.getGame(p);
+
         if (g == null) {
-            for (final Game game : this.main.getManager().getGames()) {
+            for (final Game game : manager.getGames()) {
                 game.getTeamA().getPlayers().forEach(e.getRecipients()::remove);
                 game.getTeamB().getPlayers().forEach(e.getRecipients()::remove);
             }
-        } else {
-            e.getRecipients().clear();
-//            旁观者不能说话
-            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                p.sendMessage(Messages.SPECTATOR_CHAT.toString());
-                return;
-            }
-            if (g.getState() == GameState.WAITING || g.getState() == GameState.END) {
-                e.getRecipients().addAll(g.getTeamA().getPlayers());
-                e.getRecipients().addAll(g.getTeamB().getPlayers());
-                e.setFormat(Messages.CHAT_WAITING_FORMAT.toString().replace("%player%", p.getName()).replace("%message%", "%2$s"));
-            } else if (e.getMessage().startsWith("@") && e.getMessage().length() > 1) {
-                e.getRecipients().addAll(g.getTeamA().getPlayers());
-                e.getRecipients().addAll(g.getTeamB().getPlayers());
-                e.setMessage(e.getMessage().substring(1));
-                e.setFormat(Messages.CHAT_GLOBAL_FORMAT.toString().replace("%player%", p.getName()).replace("%message%", "%2$s"));
-            } else if (this.main.getManager().getTeam(g, p) == GameTeam.Role.COUNTERTERRORIST) {
-                final GameTeam ct = this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST);
-                e.getRecipients().addAll(ct.getPlayers());
-                e.setFormat(Messages.CHAT_PLAYING_FORMAT.toString().replace("%team%", Messages.PACK_COPS.toString()).replace("%player%", p.getName()).replace("%message%", "%2$s"));
-            } else {
-                final GameTeam t = this.main.getManager().getTeam(g, GameTeam.Role.TERRORIST);
-                e.getRecipients().addAll(t.getPlayers());
-                e.setFormat(Messages.CHAT_PLAYING_FORMAT.toString().replace("%team%", Messages.PACK_CRIMS.toString()).replace("%player%", p.getName()).replace("%message%", "%2$s"));
-            }
+            return;
         }
+
+        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+            e.setCancelled(true);
+            p.sendMessage(Messages.SPECTATOR_CHAT.toString());
+            return;
+        }
+
+        e.getRecipients().clear();
+        String rawFormat = "";
+
+        if (g.getState() == GameState.WAITING || g.getState() == GameState.END) {
+            e.getRecipients().addAll(g.getTeamA().getPlayers());
+            e.getRecipients().addAll(g.getTeamB().getPlayers());
+            rawFormat = Messages.CHAT_WAITING_FORMAT.toString();
+
+        } else if (e.getMessage().startsWith("@") && e.getMessage().length() > 1) {
+            e.getRecipients().addAll(g.getTeamA().getPlayers());
+            e.getRecipients().addAll(g.getTeamB().getPlayers());
+            e.setMessage(e.getMessage().substring(1));
+            rawFormat = Messages.CHAT_GLOBAL_FORMAT.toString();
+
+        } else {
+            final GameTeam.Role role = manager.getTeam(g, p);
+            final GameTeam team = manager.getTeam(g, role);
+            if (team != null) {
+                e.getRecipients().addAll(team.getPlayers());
+            }
+
+            String teamName = (role == GameTeam.Role.COUNTERTERRORIST)
+                    ? Messages.PACK_COPS.toString()
+                    : Messages.PACK_CRIMS.toString();
+
+            // 1. 先进行基础替换
+            rawFormat = Messages.CHAT_PLAYING_FORMAT.toString().replace("%team%", teamName);
+        }
+
+        // 2. 核心：解析 PlaceholderAPI 变量
+        // 检查服务器是否安装了 PAPI
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            rawFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, rawFormat);
+        }
+
+        // 3. 安全构建最终格式
+        String finalFormat = rawFormat.replace("%", "%%")
+                .replace("%%player%%", "%1$s")
+                .replace("%%message%%", "%2$s");
+
+        // 兼容可能存在的单百分号占位符
+        finalFormat = finalFormat.replace("%player%", "%1$s")
+                .replace("%message%", "%2$s");
+
+        e.setFormat(finalFormat);
     }
 
     @EventHandler
@@ -425,7 +496,7 @@ public class GameListener implements Listener {
                                     // 检查胸甲槽位是否有胸甲
                                     ItemStack chestplate = p.getInventory().getItem(chestplateSlot);
 
-                                    if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
+                                    if (chestplate != null && chestplate.getType() == Material.LEATHER_CHESTPLATE) {
                                         p.closeInventory();
                                         p.sendMessage(Messages.SHOP_NEED_CHESTPLATE.toString()); // 提示需要先购买胸甲
                                         p.playSound(p.getLocation(), "cs_shop.shop.shopcantbuy", 1.0f, 1.0f);
@@ -629,7 +700,11 @@ public class GameListener implements Listener {
                         if (this.main.getManager().isInBombArea(g, e.getTo())) {
                             if (is.getType() == Material.TNT) {
                                 final ItemMeta im = is.getItemMeta();
-                                im.setDisplayName("§eꐴ§a " + Messages.ITEM_BOMB_NAME + " §8(§c" + Messages.ITEM_RIGHT_CLICK + "§8)");
+                                String rawName = "§e" + Messages.PACK_BOMB + "§a " + Messages.ITEM_BOMB_NAME + " §8(§c" + Messages.ITEM_RIGHT_CLICK + "§8)";
+                                if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                                    rawName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, rawName);
+                                }
+                                im.setDisplayName(rawName);
                                 im.setCustomModelData(1000);
                                 is.setItemMeta(im);
                                 is.setType(Material.GOLDEN_APPLE);
@@ -637,7 +712,11 @@ public class GameListener implements Listener {
                             }
                         } else if (is.getType() == Material.GOLDEN_APPLE) {
                             final ItemMeta im = is.getItemMeta();
-                            im.setDisplayName("§eꐴ§a " + Messages.ITEM_BOMB_NAME);
+                            String rawName = "§e" + Messages.PACK_BOMB + "§a " + Messages.ITEM_BOMB_NAME;
+                            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                                rawName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, rawName);
+                            }
+                            im.setDisplayName(rawName);
                             im.setCustomModelData(1000);
                             is.setItemMeta(im);
                             is.setType(Material.TNT);
@@ -717,7 +796,11 @@ public class GameListener implements Listener {
                         }
                         if (is.getType() == Material.GOLDEN_APPLE && !this.main.getManager().isInBombArea(g, item.getLocation())) {
                             final ItemMeta im = is.getItemMeta();
-                            im.setDisplayName("§eꐴ§a " + Messages.ITEM_BOMB_NAME);
+                            String rawName = "§e" + Messages.PACK_BOMB + "§a " + Messages.ITEM_BOMB_NAME + " §8(§c" + Messages.ITEM_RIGHT_CLICK + "§8)";
+                            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                                rawName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, rawName);
+                            }
+                            im.setDisplayName(rawName);
                             im.setCustomModelData(1000);
                             is.setItemMeta(im);
                             is.setType(Material.TNT);
@@ -775,7 +858,11 @@ public class GameListener implements Listener {
                 if (is.getType() == Material.TNT || is.getType() == Material.GOLDEN_APPLE) {
                     if (is.getType() == Material.GOLDEN_APPLE) {
                         final ItemMeta im = is.getItemMeta();
-                        im.setDisplayName("§eꐴ§a " + Messages.ITEM_BOMB_NAME);
+                        String rawName = "§e" + Messages.PACK_BOMB + "§a " + Messages.ITEM_BOMB_NAME;
+                        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                            rawName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, rawName);
+                        }
+                        im.setDisplayName(rawName);
                         im.setCustomModelData(1000);
                         is.setItemMeta(im);
                         is.setType(Material.TNT);
@@ -829,10 +916,10 @@ public class GameListener implements Listener {
             final Gun gun = this.main.getGun(is);
             if (gun != null && gun.hasSnipe()) {
                 if (e.isSneaking()) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, Integer.MAX_VALUE, 2));
                     this.main.getVersionInterface().sendFakeItem(p, 0, new ItemStack(Material.CARVED_PUMPKIN));
                 } else {
-                    p.removePotionEffect(PotionEffectType.SLOW);
+                    p.removePotionEffect(PotionEffectType.SLOWNESS);
                     this.main.getVersionInterface().sendFakeItem(p, 0, p.getInventory().getHelmet());
                 }
             }

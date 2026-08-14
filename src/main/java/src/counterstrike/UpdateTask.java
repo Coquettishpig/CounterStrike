@@ -69,7 +69,7 @@ public class UpdateTask extends BukkitRunnable
                     l.setX(x + MathUtils.randomRange(-20, 20));
                     l.setY(y + MathUtils.randomRange(-5, 5));
                     l.setZ(z + MathUtils.randomRange(-20, 20));
-                    final Firework f = (Firework)l.getWorld().spawnEntity(l, EntityType.FIREWORK);
+                    final Firework f = (Firework)l.getWorld().spawnEntity(l, EntityType.FIREWORK_ROCKET);
                     final FireworkMeta fm = f.getFireworkMeta();
                     fm.addEffect((FireworkEffect)this.effects.get(MathUtils.random().nextInt(this.effects.size())));
                     f.setFireworkMeta(fm);

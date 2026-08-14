@@ -44,7 +44,7 @@ public class Gun
     private final HashMap<UUID, Integer> delayBlood;
     private final HashMap<UUID, GunCache> cache;
     private final HashMap<UUID, GunReload> inReloading;
-    
+
     public Gun(final Main main, final String name, final Item item, final GunType type, final String shotsound, final String reloadsound_start, final String reloadsound_end) {
         this.delay = new HashMap<UUID, Long>();
         this.delayBlood = new HashMap<UUID, Integer>();
@@ -58,7 +58,7 @@ public class Gun
         this.reloadsound_end = reloadsound_end;
         this.reloadsound_start = reloadsound_start;
     }
-    
+
     public void shot(final Game g, final Player p) {
         if (p.getInventory().getHeldItemSlot() == this.type.getID()) {
             final long now = System.currentTimeMillis() / 49L;
@@ -78,7 +78,7 @@ public class Gun
             this.delay.put(p.getUniqueId(), now);
         }
     }
-    
+
     public void reload(final Player p, final int slot) {
         final ItemStack gun = p.getInventory().getItem(slot);
         if (this.item.equals(gun, this.symbol) && gun.getAmount() < this.amount && !this.inReloading.containsKey(p.getUniqueId())) {
@@ -110,100 +110,100 @@ public class Gun
 
         return adjustedAccuracy;
     }
-    
+
     public String getSymbol() {
         return this.symbol;
     }
-    
+
     public void setRoundsPerYaw(final int RoundsPerYaw) {
         this.RoundsPerYaw = RoundsPerYaw;
     }
-    
+
     public void setMaxRoundsPerPitch(final int MaxRoundsPerPitch) {
         this.MaxRoundsPerPitch = MaxRoundsPerPitch;
     }
-    
+
     public void setDelayRounds(final int delayrounds) {
         this.delayrounds = delayrounds;
     }
-    
+
     public void setRounds(final int rounds) {
         this.rounds = rounds;
     }
-    
+
     public void setDistance(final int distance) {
         this.distance = distance;
     }
-    
+
     public void setDamage(final double damage) {
         this.damage = damage;
     }
-    
+
     public void setDuration(final int duration) {
         this.duration = duration;
     }
-    
+
     public int getModule() {
         return this.module;
     }
-    
+
     public void setSymbol(final String symbol) {
         this.symbol = symbol;
     }
-    
+
     public void setModule(final int module) {
         this.module = module;
     }
-    
+
     public void setAccuracy(final float accuracy) {
         this.accuracy = accuracy;
     }
-    
+
     public void setDelay(final int delayshot) {
         this.delayshot = delayshot;
     }
-    
+
     public void setBullets(final int bullets) {
         this.bullets = bullets;
     }
-    
+
     public void setAmount(final int amount) {
         this.amount = amount;
     }
-    
+
     public void resetPlayer(final Player p) {
         this.inReloading.remove(p.getUniqueId());
         this.cache.remove(p.getUniqueId());
     }
-    
+
     public int getAmount() {
         return this.amount;
     }
-    
+
     public void hasSnipe(final boolean snipe) {
         this.snipe = snipe;
     }
-    
+
     public boolean hasSnipe() {
         return this.snipe;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public Item getItem() {
         return this.item;
     }
-    
+
     public GunType getGunType() {
         return this.type;
     }
-    
+
     public void resetDelay(final Player p) {
         this.delay.remove(p.getUniqueId());
     }
-    
+
     public void tick() {
         if (!this.inReloading.isEmpty()) {
             final Iterator<Map.Entry<UUID, GunReload>> it = this.inReloading.entrySet().iterator();
@@ -415,8 +415,8 @@ public class Gun
                                             p.spawnParticle(Particle.SMALL_FLAME, l, 1, 0.0, 0.0, 0.0, 0.0);
                                         }
                                         if (distance == 0.5) {
-                                            p.spawnParticle(Particle.SNOWBALL, l, 1, 0.0, 0.0, 0.0, 0.0);
-                                            p.spawnParticle(Particle.SNOWBALL, l, 1, 0.0, 0.0, 0.0, 0.0);
+                                            p.spawnParticle(Particle.ITEM_SNOWBALL, l, 1, 0.0, 0.0, 0.0, 0.0);
+                                            p.spawnParticle(Particle.ITEM_SNOWBALL, l, 1, 0.0, 0.0, 0.0, 0.0);
                                         }
                                         final Block block = l.getBlock();
                                         if (block.getType() != Material.WHEAT && this.main.getVersionInterface().hasHitboxAt(block, l.getX(), l.getY(), l.getZ())) {

@@ -1,5 +1,6 @@
 package src.counterstrike.Handler;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -581,7 +582,7 @@ public class Game {
                             final BombExplodeEvent event = new BombExplodeEvent(this.bomb.getLocation());
                             this.main.getServer().getPluginManager().callEvent((Event) event);
                             this.bomb.getLocation().getWorld().playSound(this.bomb.getLocation(), SpigotSound.EXPLODE.getSound(), 5.0f, 5.0f);
-                            this.bomb.getLocation().getWorld().spawnParticle(Particle.EXPLOSION_LARGE, this.bomb.getLocation(), 5);
+                            this.bomb.getLocation().getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, this.bomb.getLocation(), 5);
                             for (final Player p3 : this.bomb.getNearbyPlayers(this, 15)) {
                                 if (!this.spectators.contains(p3)) {
                                     this.main.getManager().damage(this, null, p3, 20.0, Messages.PACK_BOMB.toString());
@@ -771,19 +772,46 @@ public class Game {
                             }
                             for (final Player p : this.TeamA.getPlayers()) {
                                 if (this.queue.size() > 0) {
-                                    p.sendMessage(Messages.NEW_COMBATANTS.toString());
+                                    // 解析 NEW_COMBATANTS 消息
+                                    String msg = Messages.NEW_COMBATANTS.toString();
+                                    if (this.main.placeholderSupport()) {
+                                        msg = PlaceholderAPI.setPlaceholders(p, msg);
+                                    }
+                                    p.sendMessage(msg);
+
                                     for (final Map.Entry<String, GameTeam> next : this.queue.entrySet()) {
-                                        final String prefix = (next.getValue().getRole() == GameTeam.Role.TERRORIST) ? Messages.PACK_CRIMS.toString() : Messages.PACK_COPS.toString();
-                                        p.sendMessage(prefix + " " + next.getKey());
+                                        String prefix = (next.getValue().getRole() == GameTeam.Role.TERRORIST) ?
+                                                Messages.PACK_CRIMS.toString() : Messages.PACK_COPS.toString();
+                                        String fullLine = prefix + " " + next.getKey();
+
+                                        // 解析每一行包含玩家名的消息
+                                        if (this.main.placeholderSupport()) {
+                                            fullLine = PlaceholderAPI.setPlaceholders(p, fullLine);
+                                        }
+                                        p.sendMessage(fullLine);
                                     }
                                 }
                             }
+
                             for (final Player p : this.TeamB.getPlayers()) {
                                 if (this.queue.size() > 0) {
-                                    p.sendMessage(Messages.NEW_COMBATANTS.toString());
+                                    // 解析 NEW_COMBATANTS 消息
+                                    String msg = Messages.NEW_COMBATANTS.toString();
+                                    if (this.main.placeholderSupport()) {
+                                        msg = PlaceholderAPI.setPlaceholders(p, msg);
+                                    }
+                                    p.sendMessage(msg);
+
                                     for (final Map.Entry<String, GameTeam> next : this.queue.entrySet()) {
-                                        final String prefix = (next.getValue().getRole() == GameTeam.Role.TERRORIST) ? Messages.PACK_CRIMS.toString() : Messages.PACK_COPS.toString();
-                                        p.sendMessage(prefix + " " + next.getKey());
+                                        String prefix = (next.getValue().getRole() == GameTeam.Role.TERRORIST) ?
+                                                Messages.PACK_CRIMS.toString() : Messages.PACK_COPS.toString();
+                                        String fullLine = prefix + " " + next.getKey();
+
+                                        // 解析每一行包含玩家名的消息
+                                        if (this.main.placeholderSupport()) {
+                                            fullLine = PlaceholderAPI.setPlaceholders(p, fullLine);
+                                        }
+                                        p.sendMessage(fullLine);
                                     }
                                 }
                             }

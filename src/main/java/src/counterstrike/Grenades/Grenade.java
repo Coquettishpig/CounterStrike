@@ -22,6 +22,8 @@ import src.counterstrike.Main;
 import src.counterstrike.Utils.Item;
 import src.counterstrike.Version.Entity.NMSPsyhicsItem;
 import src.counterstrike.Version.MathUtils;
+import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks;
+import net.momirealms.craftengine.core.util.Key;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -99,7 +101,7 @@ public class Grenade
                     for (final Player p : this.main.getManager().getTeam(cache.getGame(), GameTeam.Role.TERRORIST).getPlayers()) {
                         p.playSound(l, "cs_throwables.throwables.explodegrenade", 1.0f, 1.0f);
                     }
-                    l.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, l, 15);
+                    l.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, l, 15);
                     for (final Player p : cache.getNearbyPlayers(7.0)) {
                         if ((cache.getPlayer() == p || this.main.getManager().getTeam(cache.getGame(), cache.getPlayer()) != this.main.getManager().getTeam(cache.getGame(), p)) && !cache.getGame().getSpectators().contains(p)) {
                             final Location a = p.getEyeLocation().clone();
@@ -165,7 +167,7 @@ public class Grenade
 
                             if (rayTraceResult != null && rayTraceResult.getHitBlock() != null) {
                                 blockingBlock = rayTraceResult.getHitBlock();
-                                if (blockingBlock.getType() != Material.AIR && !blockingBlock.getType().isTransparent()) {
+                                if (blockingBlock.getType() != Material.AIR && !blockingBlock.getType().isSolid()) {
                                     blocked = true;
                                 }
                             }
@@ -280,7 +282,7 @@ public class Grenade
                         }
                         for (final Player p : cache.getNearbyPlayers(20.0)) {
                             p.playSound(cache.getGrenade().getLocation(), "cs.weapons.ak47", 1.0f, 1.0f);
-                            p.spawnParticle(Particle.SMOKE_LARGE, cache.getGrenade().getLocation(), 3, 0.1, 0.1, 0.1);
+                            p.spawnParticle(Particle.LARGE_SMOKE, cache.getGrenade().getLocation(), 3, 0.1, 0.1, 0.1);
                         }
                     }
                 }
@@ -290,7 +292,7 @@ public class Grenade
                             continue;
                         }
                         for (final Block b : cache.getBlocks()) {
-                            b.setType(Material.AIR);
+                            CraftEngineBlocks.remove(b);
                         }
                         cache.getBlocks().clear();
                         it.remove();
@@ -301,18 +303,16 @@ public class Grenade
                         for (final Player p : this.main.getManager().getTeam(cache.getGame(), GameTeam.Role.TERRORIST).getPlayers()) {
                             p.playSound(l, "cs_throwables.throwables.explodesmoke", 1.0f, 1.0f);
                         }
+
+                        Key smokeBlockKey = new Key("csgo", "smoke_plants");
+
                         for (final Block b : this.getBlocks(cache.getGrenade().getLocation().getBlock(), this.effect_power)) {
                             if (b.getType() == Material.AIR) {
+                                // 将该方块记录到缓存列表，方便后续 duration 到期后清理
                                 cache.getBlocks().add(b);
-                                b.setType(Material.TRIPWIRE);
-                                BlockData data = b.getBlockData();
-                                if (data instanceof org.bukkit.block.data.type.Tripwire tripwire) {
-//                                    tripwire.setPowered(true); // 设置 powered 属性为 true
-                                    tripwire.setFace(BlockFace.NORTH, true); // 设置 east 方向为连接状态
-                                    tripwire.setFace(BlockFace.SOUTH, true); // 设置 east 方向为连接状态
-                                    b.setBlockData(tripwire);
-                                }
-                                b.getDrops().clear();
+
+                                // 使用 CraftEngine API 放置方块
+                                CraftEngineBlocks.place(b.getLocation(), smokeBlockKey, false);
                             }
                         }
                         cache.setDuration(System.currentTimeMillis());

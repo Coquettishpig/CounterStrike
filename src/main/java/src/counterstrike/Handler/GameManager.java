@@ -378,7 +378,14 @@ public class GameManager {
             status.updateLine(9, Messages.SCOREBOARD_GAME_MONEY.toString() + "§6$" + g.getMoney(p));
             final ItemStack helmet = p.getInventory().getHelmet();
             final ItemStack chestplate = p.getInventory().getChestplate();
-            status.updateLine(8, Messages.SCOREBOARD_GAME_ARMOR.toString() + ((helmet != null && helmet.getType() != Material.LEATHER_HELMET) ? "§a" + Messages.PACK_HELMET : "§7" + Messages.PACK_HELMET) + ((chestplate != null && chestplate.getType() != Material.LEATHER_CHESTPLATE) ? "§a" + Messages.PACK_CHESTPLATE : "§7" + Messages.PACK_CHESTPLATE));
+
+// 提取判断逻辑，增加 isAir() 判断（1.21.1 推荐写法）
+            boolean hasHelmet = (helmet != null && helmet.getType() != Material.AIR && helmet.getType() != Material.LEATHER_HELMET);
+            boolean hasChestplate = (chestplate != null && chestplate.getType() != Material.AIR && chestplate.getType() != Material.LEATHER_CHESTPLATE);
+
+            status.updateLine(8, Messages.SCOREBOARD_GAME_ARMOR.toString() +
+                    (hasHelmet ? "§a" + Messages.PACK_HELMET : "§7" + Messages.PACK_HELMET) +
+                    (hasChestplate ? "§a" + Messages.PACK_CHESTPLATE : "§7" + Messages.PACK_CHESTPLATE));
             final PlayerStatus data = g.getStats().get(p.getUniqueId());
             status.updateLine(7, Messages.SCOREBOARD_GAME_DEATHS.toString() + "§3" + data.getDeaths());
             status.updateLine(6, Messages.SCOREBOARD_GAME_KILLS.toString() + "§3" + data.getKills());
@@ -680,16 +687,16 @@ public class GameManager {
             } else {
                 p.setWalkSpeed(0.2f);
             }
-            if (p.getInventory().getHelmet() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getHelmet().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setHelmet(ItemBuilder.createItem(Material.LEATHER_HELMET, Color.BLUE, this.main.getDefaultHelmetName()));
             }
-            if (p.getInventory().getChestplate() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getChestplate().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setChestplate(ItemBuilder.createItem(Material.LEATHER_CHESTPLATE, Color.BLUE, this.main.getDefaultChestplateName()));
             }
-            if (p.getInventory().getLeggings() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getLeggings().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setLeggings(ItemBuilder.createItem(Material.LEATHER_LEGGINGS, Color.BLUE, this.main.getDefaultLeggingName()));
             }
-            if (p.getInventory().getBoots() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getBoots().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setBoots(ItemBuilder.createItem(Material.LEATHER_BOOTS, Color.BLUE, this.main.getDefaultBootName()));
             }
         }
@@ -756,16 +763,16 @@ public class GameManager {
             } else {
                 p.setWalkSpeed(0.2f);
             }
-            if (p.getInventory().getHelmet() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getHelmet().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setHelmet(ItemBuilder.createItem(Material.LEATHER_HELMET, Color.RED, this.main.getDefaultHelmetName()));
             }
-            if (p.getInventory().getChestplate() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getChestplate().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setChestplate(ItemBuilder.createItem(Material.LEATHER_CHESTPLATE, Color.RED, this.main.getDefaultChestplateName()));
             }
-            if (p.getInventory().getLeggings() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getLeggings().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setLeggings(ItemBuilder.createItem(Material.LEATHER_LEGGINGS, Color.RED, this.main.getDefaultLeggingName()));
             }
-            if (p.getInventory().getBoots() == null || g.getRound() == this.main.getRoundToSwitch()) {
+            if (p.getInventory().getBoots().getType() == Material.AIR || g.getRound() == this.main.getRoundToSwitch()) {
                 p.getInventory().setBoots(ItemBuilder.createItem(Material.LEATHER_BOOTS, Color.RED, this.main.getDefaultBootName()));
             }
         }
@@ -802,65 +809,61 @@ public class GameManager {
         if (damage <= 0.0) {
             return false;
         }
+
         if (victim.getHealth() <= damage) {
+            // 1. 基础死亡处理
             victim.setHealth(5.0);
             victim.damage(4.0);
             victim.setHealth(20.0);
             victim.closeInventory();
             g.getSpectators().add(victim);
+
+            // 2. 物品掉落处理 (优化后的循环)
             for (final ItemStack is : victim.getInventory().getContents()) {
-                if (is != null) {
-                    final Gun gun = this.main.getGun(is);
-                    if (gun != null) {
-                        final int amount = is.getAmount() - 1;
-                        is.setAmount(1);
-                        final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
-                        g.getDrops().put(s, amount);
-                        victim.getInventory().remove(is);
-                    }
-                    final Grenade grenade = this.main.getGrenade(is);
-                    if (grenade != null) {
-                        is.setAmount(1);
-                        final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
-                        g.getDrops().put(s, 1);
-                        victim.getInventory().remove(is);
-                    }
-                    if (is.getType() == Material.SHEARS) {
-                        final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
-                        g.getDrops().put(s, 1);
-                        s.setItemStack(is);
-                    }
+                if (is == null) continue;
+
+                // 处理枪械/手雷
+                final Gun gun = this.main.getGun(is);
+                final Grenade grenade = this.main.getGrenade(is);
+                if (gun != null || grenade != null) {
+                    int amount = (gun != null) ? is.getAmount() - 1 : 1;
+                    is.setAmount(1);
+                    final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
+                    g.getDrops().put(s, amount);
+                    victim.getInventory().remove(is);
+                }
+                // 处理剪刀或原版TNT
+                else if (is.getType() == Material.SHEARS || is.getType() == Material.TNT) {
+                    final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
+                    g.getDrops().put(s, 1);
                     if (is.getType() == Material.TNT) {
-                        final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
-                        g.getDrops().put(s, 1);
-                        s.setItemStack(is);
                         g.getBomb().setDrop(s);
-                        for (final Player t : this.main.getManager().getTeam(g, GameTeam.Role.TERRORIST).getPlayers()) {
-                            t.playSound(t.getLocation(), "cs_gamesounds.gamesounds.bombdroppedyourteam", 1.0f, 1.0f);
-                        }
-                        for (final Player ct : this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST).getPlayers()) {
-                            ct.playSound(ct.getLocation(), "cs_gamesounds.gamesounds.bombdroppedenemyteam", 1.0f, 1.0f);
-                        }
-                    }
-                    if (is.getType() == Material.GOLDEN_APPLE) {
-                        final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
-                        g.getDrops().put(s, 1);
-                        final ItemMeta im = is.getItemMeta();
-                        im.setDisplayName("§e" + Messages.PACK_BOMB + "§a " + Messages.ITEM_BOMB_NAME);
-                        im.setCustomModelData(1000);
-                        is.setItemMeta(im);
-                        is.setType(Material.TNT);
-                        s.setItemStack(is);
-                        g.getBomb().setDrop(s);
-                        for (final Player t2 : this.main.getManager().getTeam(g, GameTeam.Role.TERRORIST).getPlayers()) {
-                            t2.playSound(t2.getLocation(), "cs_gamesounds.gamesounds.bombdroppedyourteam", 1.0f, 1.0f);
-                        }
-                        for (final Player ct2 : this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST).getPlayers()) {
-                            ct2.playSound(ct2.getLocation(), "cs_gamesounds.gamesounds.bombdroppedenemyteam", 1.0f, 1.0f);
-                        }
+                        broadcastBombDrop(g); // 提取出来的音效方法
                     }
                 }
+                // 处理金苹果(炸弹包)
+                else if (is.getType() == Material.GOLDEN_APPLE) {
+                    final Item s = victim.getWorld().dropItemNaturally(victim.getLocation(), is);
+                    g.getDrops().put(s, 1);
+                    final ItemMeta im = is.getItemMeta();
+                    im.setDisplayName("§e" + Messages.PACK_BOMB + "§a " + Messages.ITEM_BOMB_NAME);
+                    im.setCustomModelData(1000);
+                    is.setItemMeta(im);
+                    is.setType(Material.TNT);
+                    s.setItemStack(is);
+                    g.getBomb().setDrop(s);
+                    broadcastBombDrop(g);
+                }
             }
+
+            // 3. 变量解析 (PlaceholderAPI)
+            String parsedSymbol = symbol;
+            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                // 优先使用 killer 作为上下文，如果 killer 为空则用 victim
+                parsedSymbol = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(killer != null ? killer : victim, symbol);
+            }
+
+            // 4. 发送击杀消息与奖励 (只保留这一处)
             if (killer != null) {
                 final PlayerStatus killer_stats = g.getStats().get(killer.getUniqueId());
                 killer_stats.addKill();
@@ -868,47 +871,36 @@ public class GameManager {
 //                    击杀者指令
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), this.main.getKillCommand().replace("%player%", killer.getName()));
                 }
-            }
-            final PlayerStatus victim_stats = g.getStats().get(victim.getUniqueId());
-            victim_stats.addDeath();
-            //            被击杀者指令
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), this.main.getKilledDeathCommand().replace("%player%", victim.getName()));
-            for (final Player p : g.getTeamA().getPlayers()) {
-                final ScoreBoard board = g.getStatus().get(p.getUniqueId());
-                if (killer != null) {
-                    board.getTeams().update(g, killer);
-                }
-                board.getTeams().update(g, victim);
-                this.main.getVersionInterface().sendInvisibility(board.getScoreboard(), g.getTeamA().getPlayers(), g.getSpectators());
-                this.main.getVersionInterface().sendInvisibility(board.getScoreboard(), g.getTeamB().getPlayers(), g.getSpectators());
-            }
-            for (final Player p : g.getTeamB().getPlayers()) {
-                final ScoreBoard board = g.getStatus().get(p.getUniqueId());
-                if (killer != null) {
-                    board.getTeams().update(g, killer);
-                }
-                board.getTeams().update(g, victim);
-                this.main.getVersionInterface().sendInvisibility(board.getScoreboard(), g.getTeamA().getPlayers(), g.getSpectators());
-                this.main.getVersionInterface().sendInvisibility(board.getScoreboard(), g.getTeamB().getPlayers(), g.getSpectators());
-            }
-            if (this.main.corpseSupport()) {
-            }
-            this.clearPlayer(victim);
-            victim.updateInventory();
-            victim.setGameMode(GameMode.SPECTATOR);
-            if (killer != null) {
+
                 g.setMoney(killer, g.getMoney(killer) + 300);
                 final int killer_color = (this.getTeam(g, killer) == GameTeam.Role.TERRORIST) ? 4 : 3;
                 final int victim_color = (this.getTeam(g, victim) == GameTeam.Role.TERRORIST) ? 4 : 3;
-                g.broadcast("&" + killer_color + killer.getName() + " &f" + symbol + " &" + victim_color + victim.getName());
-                this.main.getVersionInterface().sendTitle(victim, 0, 100, 0, Messages.ALREADY_DEAD.toString(), "§" + killer_color + killer.getName() + " §f" + symbol + " §" + victim_color + victim.getName());
+
+                String msg = "&" + killer_color + killer.getName() + " &f" + parsedSymbol + " &" + victim_color + victim.getName();
+                g.broadcast(msg);
+                this.main.getVersionInterface().sendTitle(victim, 0, 100, 0, Messages.ALREADY_DEAD.toString(), msg.replace("&", "§"));
             } else {
                 final int victim_color2 = (this.getTeam(g, victim) == GameTeam.Role.TERRORIST) ? 4 : 3;
-                g.broadcast("&f" + symbol + " &" + victim_color2 + victim.getName());
-                this.main.getVersionInterface().sendTitle(victim, 0, 100, 0, Messages.ALREADY_DEAD.toString(), "§f" + symbol + " §" + victim_color2 + victim.getName());
+                String msg = "&f" + parsedSymbol + " &" + victim_color2 + victim.getName();
+                g.broadcast(msg);
+                this.main.getVersionInterface().sendTitle(victim, 0, 100, 0, Messages.ALREADY_DEAD.toString(), msg.replace("&", "§"));
             }
+
+            // 5. 更新统计数据与计分板
+            final PlayerStatus victim_stats = g.getStats().get(victim.getUniqueId());
+            victim_stats.addDeath();
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), this.main.getKilledDeathCommand().replace("%player%", victim.getName()));
+
+            updateAllScoreboards(g, killer, victim); // 提取出来的计分板更新方法
+
+            this.clearPlayer(victim);
+            victim.updateInventory();
+            victim.setGameMode(GameMode.SPECTATOR);
+
             return true;
         }
+
+        // 处理非致命伤害
         if (victim.getNoDamageTicks() < 1) {
             final double health = victim.getHealth();
             victim.setHealth(5.0);
@@ -917,15 +909,41 @@ public class GameManager {
             victim.setNoDamageTicks(1);
         }
         victim.setHealth(victim.getHealth() - damage);
-        for (final Player p2 : g.getTeamA().getPlayers()) {
-            g.getStatus().get(p2.getUniqueId()).getHealth().update(victim);
-        }
-        for (final Player p2 : g.getTeamB().getPlayers()) {
-            g.getStatus().get(p2.getUniqueId()).getHealth().update(victim);
-        }
+        updateHealthDisplay(g, victim);
+
         return false;
     }
 
+    // 辅助方法：播放炸弹掉落音效
+    private void broadcastBombDrop(Game g) {
+        for (final Player t : this.main.getManager().getTeam(g, GameTeam.Role.TERRORIST).getPlayers()) {
+            t.playSound(t.getLocation(), "cs_gamesounds.gamesounds.bombdroppedyourteam", 1.0f, 1.0f);
+        }
+        for (final Player ct : this.main.getManager().getTeam(g, GameTeam.Role.COUNTERTERRORIST).getPlayers()) {
+            ct.playSound(ct.getLocation(), "cs_gamesounds.gamesounds.bombdroppedenemyteam", 1.0f, 1.0f);
+        }
+    }
+
+    // 辅助方法：更新所有人的计分板
+    private void updateAllScoreboards(Game g, Player killer, Player victim) {
+        List<Player> allPlayers = new ArrayList<>();
+        allPlayers.addAll(g.getTeamA().getPlayers());
+        allPlayers.addAll(g.getTeamB().getPlayers());
+
+        for (Player p : allPlayers) {
+            final ScoreBoard board = g.getStatus().get(p.getUniqueId());
+            if (killer != null) board.getTeams().update(g, killer);
+            board.getTeams().update(g, victim);
+            this.main.getVersionInterface().sendInvisibility(board.getScoreboard(), g.getTeamA().getPlayers(), g.getSpectators());
+            this.main.getVersionInterface().sendInvisibility(board.getScoreboard(), g.getTeamB().getPlayers(), g.getSpectators());
+        }
+    }
+
+    // 辅助方法：更新血量显示
+    private void updateHealthDisplay(Game g, Player victim) {
+        for (Player p : g.getTeamA().getPlayers()) g.getStatus().get(p.getUniqueId()).getHealth().update(victim);
+        for (Player p : g.getTeamB().getPlayers()) g.getStatus().get(p.getUniqueId()).getHealth().update(victim);
+    }
     public void removeGame(final Game g) {
         for (final Location l : g.getSigns()) {
             if (l.getBlock().getState() instanceof Sign) {

@@ -27,7 +27,7 @@ import src.counterstrike.Utils.GameUtils;
 import src.counterstrike.Utils.Item;
 import src.counterstrike.Utils.PlayerHider;
 import src.counterstrike.Version.VersionInterface;
-import src.counterstrike.Version.v1_20_R3.v1_20_R3;
+import src.counterstrike.Version.v1_21_R1.v1_21_R1;
 
 
 import java.io.File;
@@ -147,22 +147,20 @@ public class Main extends JavaPlugin
         Main.main = this;
         this.getDataFolder().mkdirs();
         final ConsoleCommandSender console = this.getServer().getConsoleSender();
+
+        // 获取原始版本号 (例如 "1.21.11-R0.1-SNAPSHOT")
         final String serverVersion = GameUtils.getServerVersion();
         this.getCommand("counterstrike").setExecutor(this.commandExecutor);
-//        console.sendMessage(serverVersion);
-        switch (serverVersion) {
-            case "v1_20_R2":
-            case "v1_20_R3": {
-                this.version = new v1_20_R3();
-                break;
-            }
+
+        // 核心版本匹配逻辑
+        if (serverVersion.contains("1.21")) {
+
+            this.version = new src.counterstrike.Version.v1_21_R1.v1_21_R1();
         }
+
         if (this.version == null) {
-            console.sendMessage("§cCounterStrike 只能在1.20.4版本运行");
-            try {
-                Thread.sleep(2000L);
-            }
-            catch (InterruptedException ex) {}
+            console.sendMessage("§c[CounterStrike] 不支持的版本: " + serverVersion);
+            console.sendMessage("§c插件仅支持 1.21.x 系列版本。");
             this.setEnabled(false);
             return;
         }
@@ -426,7 +424,7 @@ public class Main extends JavaPlugin
             for (final Game g : this.manager.getGames()) {
                 this.manager.stopGame(g, false);
                 for (final Entity en : g.getCounterTerroristLoc().get(0).getWorld().getEntities()) {
-                    if (en.getType() == EntityType.DROPPED_ITEM) {
+                    if (en.getType() == EntityType.ITEM) {
                         en.remove();
                     }
                 }
